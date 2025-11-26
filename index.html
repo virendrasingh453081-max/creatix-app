@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creatix - Login</title>
     <style>
         :root {
-            --primary-color: #007bff; /* Blue */
-            --secondary-color: #000000; /* Black */
-            --text-color: #333;
-            --bg-color: #f4f7f6;
-            --white: #ffffff;
+            --primary-color: #007bff;
+            /* Blue */
+            --bg-color: #121212;
+            /* Dark Background */
+            --surface-color: #1e1e1e;
+            /* Dark Surface */
+            --text-color: #ffffff;
+            /* White Text */
+            --text-secondary: #b0b0b0;
+            --input-bg: #2c2c2c;
+            --input-border: #444;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -29,42 +37,55 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            display: none; /* Hidden by default */
+            display: none;
         }
 
         .spinner {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid var(--primary-color);
+            border: 6px solid #333;
+            border-top: 6px solid var(--primary-color);
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Login Container */
         .login-container {
-            background: var(--white);
+            background: var(--surface-color);
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 90%;
             max-width: 400px;
             margin: auto;
             text-align: center;
+            border: 1px solid #333;
         }
 
         .login-container h1 {
-            color: var(--secondary-color);
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+        }
+
+        .login-container p {
+            color: var(--text-secondary);
             margin-bottom: 30px;
         }
 
@@ -75,44 +96,63 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            color: var(--text-color);
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         .form-group input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            padding: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            color: var(--text-color);
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
         }
 
         .btn-login {
             background-color: var(--primary-color);
-            color: var(--white);
+            color: #fff;
             border: none;
-            padding: 12px 20px;
+            padding: 14px 20px;
             width: 100%;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 10px;
         }
 
         .btn-login:hover {
             background-color: #0056b3;
         }
 
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
         /* Footer */
         footer {
             text-align: center;
             padding: 20px;
-            background-color: var(--secondary-color);
-            color: var(--white);
+            background-color: var(--surface-color);
+            color: var(--text-secondary);
             margin-top: auto;
+            font-size: 0.9rem;
+            border-top: 1px solid #333;
         }
     </style>
 </head>
+
 <body>
 
     <div id="loader">
@@ -121,14 +161,15 @@
 
     <div class="login-container">
         <h1>CREATIX</h1>
+        <p>Welcome back! Please login.</p>
         <form id="loginForm">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username" required placeholder="Enter your username">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
             </div>
             <button type="submit" class="btn-login">Login</button>
         </form>
@@ -140,7 +181,7 @@
 
     <script>
         // CONFIGURATION
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec'; // User must replace this
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec';
 
         const loginForm = document.getElementById('loginForm');
         const loader = document.getElementById('loader');
@@ -149,11 +190,6 @@
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
-            if (!WEB_APP_URL || WEB_APP_URL === 'YOUR_WEB_APP_URL_HERE') {
-                alert('Please configure the Web App URL in the code.');
-                return;
-            }
 
             showLoader();
 
@@ -165,14 +201,14 @@
                         payload: { username, password }
                     })
                 });
-                
+
                 const result = await response.json();
 
                 if (result.status === 'success') {
                     const { role, user } = result.data;
                     localStorage.setItem('creatix_user', JSON.stringify(user));
                     localStorage.setItem('creatix_role', role);
-                    
+
                     // Redirect based on role
                     if (role === 'boss') {
                         window.location.href = 'boss.html';
@@ -205,5 +241,5 @@
         }
     </script>
 </body>
-</html>
 
+</html>
