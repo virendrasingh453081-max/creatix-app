@@ -1,119 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Creatix Login</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #0B0B0B;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .login-card {
-      background-color: #1C1C1C;
-      padding: 40px 30px;
-      border-radius: 12px;
-      width: 350px;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
-    }
-    .login-card h2 { color: #1E90FF; margin-bottom: 30px; }
-    input { width: 100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #333; background:#121212; color:#fff; box-sizing: border-box; }
-    input:focus { border-color:#1E90FF; box-shadow:0 0 8px #1E90FF; outline:none; }
-    button { width:100%; padding:12px; border:none; border-radius:8px; background:#1E90FF; color:#fff; font-size:16px; cursor:pointer; margin-top:10px; transition: 0.3s; }
-    button:hover { background:#007BFF; box-shadow:0 0 10px #1E90FF; }
-    .error-msg { color:#FF4C4C; margin-top:10px; display:none; font-size: 14px; }
-    .loader-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(11,11,11,0.7); display:none; justify-content:center; align-items:center; z-index:999; }
-    .loader { border:6px solid #f3f3f3; border-top:6px solid #1E90FF; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite; }
-    @keyframes spin { 0%{transform:rotate(0deg);}100%{transform:rotate(360deg);} }
-    footer { position:fixed; bottom:0; width:100%; text-align:center; padding:10px; background:#121212; color:#fff; font-size:14px; }
-    footer span { color:#1E90FF; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creatix - Login</title>
+    <style>
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --secondary-color: #000000; /* Black */
+            --text-color: #333;
+            --bg-color: #f4f7f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none; /* Hidden by default */
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--primary-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Login Container */
+        .login-container {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+
+        .btn-login {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: #0056b3;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            margin-top: auto;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="login-card">
-    <h2>Creatix Login</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <div class="error-msg" id="error-msg">Invalid credentials</div>
-  </div>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
 
-  <div class="loader-overlay" id="loader">
-    <div class="loader"></div>
-  </div>
+    <div class="login-container">
+        <h1>CREATIX</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+    </div>
 
-  <footer>Made with <span>❤️</span> by Tanush</footer>
+    <footer>
+        Made with ❤️ by Tanush
+    </footer>
 
-  <script>
-    // ⚠️ IMPORTANT: Paste your NEW web app URL here
-    const webAppURL = "https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec";
+    <script>
+        // CONFIGURATION
+        const WEB_APP_URL = 'YOUR_WEB_APP_URL_HERE'; // User must replace this
 
-    function showLoader(show){
-      document.getElementById('loader').style.display = show ? 'flex' : 'none';
-    }
+        const loginForm = document.getElementById('loginForm');
+        const loader = document.getElementById('loader');
 
-    async function login(){
-      const usernameIn = document.getElementById('username').value.trim();
-      const passwordIn = document.getElementById('password').value.trim();
-      const errorMsg = document.getElementById('error-msg');
-      errorMsg.style.display = 'none';
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-      if(!usernameIn || !passwordIn){
-        errorMsg.textContent = "Enter username and password";
-        errorMsg.style.display = 'block';
-        return;
-      }
+            if (!WEB_APP_URL || WEB_APP_URL === 'YOUR_WEB_APP_URL_HERE') {
+                alert('Please configure the Web App URL in the code.');
+                return;
+            }
 
-      showLoader(true);
+            showLoader();
 
-      // FIX FOR CORS: Use URLSearchParams to send as 'application/x-www-form-urlencoded'
-      // This prevents the browser from sending a preflight OPTIONS request which GAS fails at.
-      const formData = new URLSearchParams();
-      formData.append('username', usernameIn);
-      formData.append('password', passwordIn);
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'login',
+                        payload: { username, password }
+                    })
+                });
+                
+                const result = await response.json();
 
-      try {
-        const res = await fetch(webAppURL, {
-          method: "POST",
-          body: formData, 
-          // do NOT set 'Content-Type': 'application/json' here
+                if (result.status === 'success') {
+                    const { role, user } = result.data;
+                    localStorage.setItem('creatix_user', JSON.stringify(user));
+                    localStorage.setItem('creatix_role', role);
+                    
+                    // Redirect based on role
+                    if (role === 'boss') {
+                        window.location.href = 'pages/boss.html';
+                    } else if (role === 'counselor') {
+                        window.location.href = 'pages/counselor.html';
+                    } else if (role === 'faculty') {
+                        window.location.href = 'pages/faculty.html';
+                    } else if (role === 'student') {
+                        window.location.href = 'pages/student.html';
+                    } else {
+                        alert('Unknown role: ' + role);
+                    }
+                } else {
+                    alert('Login failed: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            } finally {
+                hideLoader();
+            }
         });
 
-        const data = await res.json();
-        showLoader(false);
-
-        if(data.status === "success"){
-          console.log("Login successful, Role:", data.role);
-          
-          // Redirect logic
-          switch(data.role.toLowerCase()){
-            case "boss": window.location.href = "boss.html"; break;
-            case "counselor": window.location.href = "counselor.html"; break;
-            case "faculty": window.location.href = "faculty.html"; break;
-            case "student": window.location.href = "student.html"; break;
-            default: 
-              alert("Login successful, but unknown role: " + data.role);
-          }
-        } else {
-          errorMsg.textContent = data.message || "Invalid credentials";
-          errorMsg.style.display = 'block';
+        function showLoader() {
+            loader.style.display = 'flex';
         }
-      } catch(e){
-        console.error(e);
-        showLoader(false);
-        errorMsg.textContent = "Connection failed. Check console.";
-        errorMsg.style.display = 'block';
-      }
-    }
-  </script>
+
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+    </script>
 </body>
 </html>
-
