@@ -8,19 +8,23 @@
     <style>
         :root {
             --primary-color: #007bff;
-            --secondary-color: #000000;
-            --text-color: #333;
-            --bg-color: #f4f7f6;
-            --white: #ffffff;
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-color: #ffffff;
+            --text-secondary: #b0b0b0;
+            --input-bg: #2c2c2c;
+            --input-border: #444;
             --sidebar-width: 250px;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* Loader */
@@ -30,20 +34,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
             display: none;
         }
 
         .spinner {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid var(--primary-color);
+            border: 6px solid #333;
+            border-top: 6px solid var(--primary-color);
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
         }
 
@@ -60,33 +64,62 @@
         /* Sidebar */
         .sidebar {
             width: var(--sidebar-width);
-            background-color: var(--secondary-color);
-            color: var(--white);
+            background-color: var(--surface-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             padding: 20px;
             box-sizing: border-box;
             position: fixed;
             height: 100%;
+            left: 0;
+            top: 0;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+            border-right: 1px solid #333;
         }
 
         .sidebar h2 {
             text-align: center;
             margin-bottom: 40px;
             color: var(--primary-color);
+            letter-spacing: 1px;
         }
 
         .nav-item {
             padding: 15px;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 8px;
             margin-bottom: 10px;
             transition: background 0.3s;
+            color: var(--text-secondary);
         }
 
         .nav-item:hover,
         .nav-item.active {
             background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--surface-color);
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid #333;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-color);
+            margin: 5px 0;
         }
 
         /* Main Content */
@@ -96,24 +129,40 @@
             padding: 40px;
             display: flex;
             flex-direction: column;
+            transition: margin-left 0.3s ease-in-out;
+            width: 100%;
         }
 
         .tab-content {
             display: none;
-            background: var(--white);
+            background: var(--surface-color);
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
+            border: 1px solid #333;
         }
 
         .tab-content.active {
             display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h2 {
-            color: var(--secondary-color);
-            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-bottom: 1px solid #333;
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
@@ -132,63 +181,115 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            color: var(--text-color);
             box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.1s;
+            font-weight: bold;
         }
 
         .btn-primary {
             background-color: var(--primary-color);
-            color: var(--white);
+            color: #fff;
         }
 
         .btn-primary:hover {
             background-color: #0056b3;
         }
 
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
         /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            min-width: 600px;
         }
 
         th,
         td {
-            padding: 12px;
+            padding: 15px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #333;
         }
 
         th {
-            background-color: var(--secondary-color);
-            color: var(--white);
+            background-color: #252525;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #252525;
         }
 
         /* Footer */
         footer {
             text-align: center;
             padding: 20px;
-            background-color: var(--secondary-color);
-            color: var(--white);
+            background-color: var(--surface-color);
+            color: var(--text-secondary);
             margin-top: auto;
+            border-top: 1px solid #333;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 80px;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -199,12 +300,20 @@
         <div class="spinner"></div>
     </div>
 
-    <div class="sidebar">
+    <div class="hamburger" onclick="toggleSidebar()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
         <h2>CREATIX ERP</h2>
-        <div class="nav-item active" onclick="showTab('mark-attendance')">Mark Student Attendance</div>
-        <div class="nav-item" onclick="showTab('my-students')">My Students</div>
-        <div class="nav-item" onclick="showTab('self-attendance')">Mark Self Attendance</div>
-        <div class="nav-item" onclick="logout()" style="margin-top: auto; background-color: #dc3545;">Logout</div>
+        <div class="nav-item active" onclick="showTab('mark-attendance'); toggleSidebarOnMobile()">Mark Student
+            Attendance</div>
+        <div class="nav-item" onclick="showTab('my-students'); toggleSidebarOnMobile()">My Students</div>
+        <div class="nav-item" onclick="showTab('self-attendance'); toggleSidebarOnMobile()">Mark Self Attendance</div>
+        <div class="nav-item" onclick="logout()" style="margin-top: auto; background-color: #dc3545; color: white;">
+            Logout</div>
     </div>
 
     <div class="main-content">
@@ -212,41 +321,45 @@
         <!-- Mark Student Attendance -->
         <div id="mark-attendance" class="tab-content active">
             <h2>Mark Student Attendance</h2>
-            <p>Select students to mark present for today.</p>
+            <p style="color: var(--text-secondary);">Select students to mark present for today.</p>
             <button class="btn btn-primary" onclick="loadStudentsForAttendance()">Load Students</button>
-            <table id="attendanceTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-container">
+                <table id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- My Students -->
         <div id="my-students" class="tab-content">
             <h2>My Students</h2>
             <button class="btn btn-primary" onclick="loadMyStudents()">Refresh List</button>
-            <table id="myStudentsTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Course</th>
-                        <th>Branch</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-container">
+                <table id="myStudentsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Branch</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Self Attendance -->
         <div id="self-attendance" class="tab-content">
             <h2>Mark Self Attendance</h2>
-            <p>Please allow location access to mark attendance.</p>
+            <p style="color: var(--text-secondary);">Please allow location access to mark attendance.</p>
             <button class="btn btn-primary" onclick="markSelfAttendance()">Mark Present</button>
         </div>
 
@@ -257,7 +370,7 @@
 
     <script>
         // CONFIGURATION
-        const WEB_APP_URL = 'YOUR_WEB_APP_URL_HERE'; // User must replace this
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec';
 
         // --- AUTH CHECK ---
         const user = JSON.parse(localStorage.getItem('creatix_user'));
@@ -273,7 +386,23 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function () {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function toggleSidebarOnMobile() {
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
         }
 
         function logout() {
@@ -286,10 +415,6 @@
 
         // --- API CALLS ---
         async function apiCall(action, payload = {}) {
-            if (!WEB_APP_URL || WEB_APP_URL === 'YOUR_WEB_APP_URL_HERE') {
-                alert('Please configure the Web App URL in the code.');
-                return null;
-            }
             showLoader();
             try {
                 const response = await fetch(WEB_APP_URL, {
@@ -342,7 +467,7 @@
         async function loadMyStudents() {
             const students = await apiCall('getAllStudents');
             if (!students) return;
-            const myStudents = students.filter(s => s.Branch === user.Branch); // Or filter by FacultyAssigned if implemented
+            const myStudents = students.filter(s => s.Branch === user.Branch);
 
             const tbody = document.querySelector('#myStudentsTable tbody');
             tbody.innerHTML = myStudents.map(s => `<tr><td>${s['Student ID']}</td><td>${s['Name']}</td><td>${s['Course']}</td><td>${s['Branch']}</td></tr>`).join('');
