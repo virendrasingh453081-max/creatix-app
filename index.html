@@ -140,7 +140,7 @@
 
     <script>
         // CONFIGURATION
-        const WEB_APP_URL = 'YOUR_WEB_APP_URL_HERE'; // User must replace this
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec'; // User must replace this
 
         const loginForm = document.getElementById('loginForm');
         const loader = document.getElementById('loader');
@@ -175,13 +175,13 @@
                     
                     // Redirect based on role
                     if (role === 'boss') {
-                        window.location.href = 'pages/boss.html';
+                        window.location.href = 'boss.html';
                     } else if (role === 'counselor') {
-                        window.location.href = 'pages/counselor.html';
+                        window.location.href = 'counselor.html';
                     } else if (role === 'faculty') {
-                        window.location.href = 'pages/faculty.html';
+                        window.location.href = 'faculty.html';
                     } else if (role === 'student') {
-                        window.location.href = 'pages/student.html';
+                        window.location.href = 'student.html';
                     } else {
                         alert('Unknown role: ' + role);
                     }
@@ -206,3 +206,4 @@
     </script>
 </body>
 </html>
+
