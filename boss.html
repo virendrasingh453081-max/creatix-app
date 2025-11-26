@@ -62,6 +62,8 @@
             color: var(--text-color);
             padding-top: 20px;
             box-shadow: var(--box-shadow);
+            /* Added for smooth collapse on mobile */
+            transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
         }
 
         #sidebar h2 {
@@ -101,6 +103,8 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: var(--box-shadow);
+            /* Ensure content inside is fluid */
+            overflow-x: auto;
         }
 
         .tab-content.active {
@@ -114,7 +118,7 @@
             color: var(--primary-dark);
         }
 
-        /* Form Styling */
+        /* Form Styling (made inputs fluid) */
         .form-group {
             margin-bottom: 15px;
         }
@@ -127,7 +131,8 @@
         }
 
         .form-control {
-            width: calc(100% - 20px);
+            /* Changed to 100% to fill the form-group on all devices */
+            width: 100%; 
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -152,11 +157,18 @@
             background-color: #0056b3;
         }
 
-        /* Table Styling */
+        /* Table Styling (Added responsiveness) */
         .data-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            /* Added for table content responsiveness */
+            min-width: 600px; /* Ensures tables are readable on small screens */
+        }
+
+        .data-table-wrapper {
+            overflow-x: auto; /* Allows horizontal scrolling on small screens */
+            width: 100%;
         }
 
         .data-table th, .data-table td {
@@ -184,6 +196,85 @@
             font-size: 0.9rem;
             margin-top: auto;
         }
+        
+        /* New Responsive Containers */
+        .main-container {
+            display: flex;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        /* Responsive Media Query for Mobile/Tablet Screens (Max width 768px) */
+        @media (max-width: 768px) {
+            /* Change main container to stack vertically */
+            .main-container {
+                flex-direction: column;
+            }
+
+            /* Sidebar changes */
+            #sidebar {
+                width: 100%; /* Full width on mobile */
+                height: auto;
+                padding-top: 10px;
+                /* Hide it off-screen initially, can be toggled via JS */
+                /* transform: translateX(-100%); */ 
+            }
+
+            #sidebar h2 {
+                display: none; /* Hide boss title on mobile to save space */
+            }
+
+            .nav-item {
+                padding: 10px;
+                justify-content: center; /* Center icons/text in mobile sidebar */
+            }
+            
+            /* Make nav items inline block to create a horizontal menu for small screens */
+            #sidebar {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                padding: 10px 0;
+            }
+            
+            .nav-item {
+                flex-basis: 30%; /* Gives space for 3-4 items per row */
+                text-align: center;
+                flex-direction: column;
+                font-size: 0.8rem;
+                padding: 8px 5px;
+            }
+            
+            .nav-item i {
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+
+            #main-content {
+                padding: 15px; /* Reduce padding on mobile */
+            }
+            
+            /* Make form group containing search and filter stack vertically */
+            .form-group[style*="flex"] {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .form-group[style*="flex"] .form-control,
+            .form-group[style*="flex"] .btn {
+                margin-bottom: 10px;
+                width: 100%;
+            }
+
+            /* Force tables to be scrollable horizontally if content is too wide */
+            #student-list-container, #staff-list-container, #branch-list-container {
+                overflow-x: auto;
+            }
+            
+            .data-table {
+                min-width: 700px; /* Ensure content doesn't break */
+            }
+        }
     </style>
 </head>
 <body>
@@ -192,8 +283,7 @@
         <div class="loader"></div>
     </div>
 
-    <div style="display: flex; flex-grow: 1;">
-        <div id="sidebar">
+    <div class="main-container"> <div id="sidebar">
             <h2>CREATIX BOSS</h2>
             <div class="nav-item active" data-tab="manage-students"><i class="fas fa-user-graduate"></i> Manage Students</div>
             <div class="nav-item" data-tab="manage-staff"><i class="fas fa-users"></i> Manage Staff</div>
@@ -412,8 +502,8 @@
         function displayBranches(branches) {
             const tbody = document.getElementById('branches-data-body');
             if (branches.length === 0) {
-                 tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No branches created yet.</td></tr>';
-                 return;
+                   tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No branches created yet.</td></tr>';
+                   return;
             }
             // Simple display logic (replace with more detailed rendering)
             tbody.innerHTML = branches.map(b => `
@@ -431,8 +521,8 @@
         function displayStudents(students) {
             const tbody = document.getElementById('students-data-body');
             if (students.length === 0) {
-                 tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No students loaded.</td></tr>';
-                 return;
+                   tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No students loaded.</td></tr>';
+                   return;
             }
              tbody.innerHTML = students.map(s => `
                 <tr>
@@ -449,8 +539,8 @@
         function displayStaff(staff) {
             const tbody = document.getElementById('staff-data-body');
             if (staff.length === 0) {
-                 tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No staff loaded.</td></tr>';
-                 return;
+                   tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No staff loaded.</td></tr>';
+                   return;
             }
             tbody.innerHTML = staff.map(s => `
                 <tr>
@@ -504,11 +594,11 @@
             if (result.status === 'SUCCESS') {
                 alert(`Staff member added successfully! ID: ${result.staffId}`);
                 this.reset();
-                 fetchData('loadInitialData', {}).then(res => displayStaff(res.data.staff));
+                fetchData('loadInitialData', {}).then(res => displayStaff(res.data.staff));
             }
         });
 
-         // Add New Branch
+          // Add New Branch
         document.getElementById('add-branch-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const formData = new FormData(this);
@@ -535,6 +625,11 @@
                 // This assumes index.html is the login page in the /frontend folder
                 window.location.href = 'index.html'; 
             }
+        }
+        
+        // Dummy function for search, not critical for responsiveness
+        function searchStudents() {
+            alert("Search feature placeholder. Logic needs implementation.");
         }
     </script>
 </body>
