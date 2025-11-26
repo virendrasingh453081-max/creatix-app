@@ -6,13 +6,13 @@
     <title>Boss Dashboard | CREATIX</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* General Styling and Variables */
+        /* General Styling and Variables (Same as before) */
         :root {
             --primary-blue: #007bff;
             --primary-dark: #212529;
             --secondary-dark: #343a40;
             --light-bg: #f8f9fa;
-            --text-color: #f8f9fa; /* White/Light text */
+            --text-color: #f8f9fa;
             --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
@@ -22,19 +22,12 @@
             padding: 0;
             background-color: var(--light-bg);
             color: var(--primary-dark);
-            min-height: 100vh;
             display: flex;
+            min-height: 100vh;
             flex-direction: column;
         }
 
-        /* --- Layout Structure (Flexbox) --- */
-        #app-container {
-            display: flex;
-            flex: 1; /* Occupy remaining vertical space */
-            min-height: calc(100vh - 40px); /* Subtract footer height */
-        }
-
-        /* --- Loader Overlay --- */
+        /* Loader Overlay */
         #loader-overlay {
             position: fixed;
             top: 0;
@@ -62,15 +55,13 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* --- Sidebar Navigation (PC View) --- */
+        /* Sidebar Navigation */
         #sidebar {
             width: 250px;
-            flex-shrink: 0;
             background-color: var(--primary-dark);
             color: var(--text-color);
             padding-top: 20px;
             box-shadow: var(--box-shadow);
-            transition: transform 0.3s ease-in-out;
         }
 
         #sidebar h2 {
@@ -97,23 +88,11 @@
             margin-right: 10px;
             width: 20px;
         }
-        
-        /* Hamburger Menu (Mobile Only) */
-        #menu-toggle {
-            display: none; 
-            cursor: pointer;
-            padding: 10px 20px;
-            background-color: var(--primary-dark);
-            color: var(--text-color);
-            font-size: 1.5rem;
-            border-bottom: 2px solid var(--primary-blue);
-        }
 
-        /* --- Main Content Area --- */
+        /* Main Content Area */
         #main-content {
             flex-grow: 1;
             padding: 30px;
-            overflow-y: auto; /* Allow scrolling within the main area */
         }
 
         .tab-content {
@@ -135,26 +114,20 @@
             color: var(--primary-dark);
         }
 
-        /* --- Form & Table Styling --- */
+        /* Form Styling */
         .form-group {
             margin-bottom: 15px;
         }
-        
-        .form-group-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap; /* Allows wrapping on smaller screens */
-        }
-        .form-group-row > * {
-            flex: 1 1 45%; /* Default for forms: two columns */
-        }
-        .form-group-row .form-control {
-            width: 100%; /* Override default width for better mobile fit */
-        }
 
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--secondary-dark);
+        }
 
         .form-control {
-            width: 100%;
+            width: calc(100% - 20px);
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -179,14 +152,9 @@
             background-color: #0056b3;
         }
 
-        /* Table Styling (Made Responsive) */
-        .table-responsive {
-            overflow-x: auto; /* Enables horizontal scroll on small screens */
-        }
-
+        /* Table Styling */
         .data-table {
             width: 100%;
-            min-width: 600px; /* Ensure table minimum width for content */
             border-collapse: collapse;
             margin-top: 20px;
         }
@@ -207,71 +175,14 @@
             background-color: #f1f1f1;
         }
 
-        /* --- Footer --- */
+        /* Footer */
         #footer {
             background-color: var(--secondary-dark);
             color: var(--text-color);
             text-align: center;
             padding: 10px 0;
             font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        /* ========================================================= */
-        /* --- MOBILE RESPONSIVENESS (Max Width 768px) --- */
-        /* ========================================================= */
-        @media (max-width: 768px) {
-            
-            /* Hide sidebar by default and position for slide-out */
-            #sidebar {
-                position: fixed;
-                height: 100%;
-                z-index: 50;
-                transform: translateX(-250px);
-                box-shadow: 2px 0 5px rgba(0,0,0,0.5);
-            }
-
-            /* Show sidebar when active */
-            #sidebar.active {
-                transform: translateX(0);
-            }
-
-            /* Show Hamburger Menu */
-            #menu-toggle {
-                display: block; 
-                text-align: left;
-                position: sticky; /* Keep menu button visible */
-                top: 0;
-                z-index: 10;
-            }
-            
-            /* Adjust main content padding */
-            #main-content {
-                padding: 15px;
-                /* Allows the main content to take up full width */
-                width: 100%; 
-                margin-left: 0;
-            }
-            
-            /* Ensure forms stack vertically on small screens */
-            .form-group-row > * {
-                flex: 1 1 100%; /* One column */
-            }
-
-            /* Overlay for mobile navigation */
-            .overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 40;
-                display: none;
-            }
-            .overlay.active {
-                display: block;
-            }
+            margin-top: auto;
         }
     </style>
 </head>
@@ -280,11 +191,8 @@
     <div id="loader-overlay">
         <div class="loader"></div>
     </div>
-    
-    <div id="sidebar-overlay" class="overlay"></div>
 
-    <div id="app-container">
-        
+    <div style="display: flex; flex-grow: 1;">
         <div id="sidebar">
             <h2>CREATIX BOSS</h2>
             <div class="nav-item active" data-tab="manage-students"><i class="fas fa-user-graduate"></i> Manage Students</div>
@@ -297,35 +205,33 @@
         </div>
 
         <div id="main-content">
-            <div id="menu-toggle"><i class="fas fa-bars"></i> Menu</div>
-
             <div id="manage-students" class="tab-content active">
                 <h3><i class="fas fa-user-graduate"></i> Manage Students</h3>
-                <div class="form-group form-group-row">
+                <div class="form-group" style="display: flex; gap: 10px;">
                     <input type="text" class="form-control" id="student-search" placeholder="Search by Name or ID">
                     <select class="form-control" id="student-branch-filter">
                         <option value="">Filter by Branch</option>
                         </select>
-                    <button class="btn btn-primary">Search</button>
+                    <button class="btn btn-primary" onclick="searchStudents()">Search</button>
                 </div>
                 <h4>Add New Student</h4>
                 <form id="add-student-form">
-                    <div class="form-group form-group-row">
-                        <input type="text" class="form-control" name="name" placeholder="Full Name" required>
-                        <input type="text" class="form-control" name="username" placeholder="Username (Unique)" required>
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    <div class="form-group"><input type="text" class="form-control" name="name" placeholder="Full Name" required></div>
+                    <div class="form-group"><input type="text" class="form-control" name="username" placeholder="Username (Unique)" required></div>
+                    <div class="form-group"><input type="password" class="form-control" name="password" placeholder="Password" required></div>
+                    <div class="form-group">
                         <select class="form-control" name="branch" id="student-branch-select" required>
                             <option value="">Select Branch</option>
                             </select>
-                        <input type="text" class="form-control" name="course" placeholder="Course Name" required>
-                        <input type="text" class="form-control" name="counselorAssigned" placeholder="Counselor ID/Name (Optional)">
-                        <input type="text" class="form-control" name="facultyAssigned" placeholder="Faculty ID/Name (Optional)">
                     </div>
+                    <div class="form-group"><input type="text" class="form-control" name="course" placeholder="Course Name" required></div>
+                    <div class="form-group"><input type="text" class="form-control" name="counselorAssigned" placeholder="Counselor ID/Name (Optional)"></div>
+                    <div class="form-group"><input type="text" class="form-control" name="facultyAssigned" placeholder="Faculty ID/Name (Optional)"></div>
                     <button type="submit" class="btn btn-primary">Add Student (Check Duplicates)</button>
                 </form>
 
                 <h4>Student List</h4>
-                <div id="student-list-container" class="table-responsive">
+                <div id="student-list-container">
                     <table class="data-table">
                         <thead>
                             <tr><th>ID</th><th>Name</th><th>Branch</th><th>Username</th><th>Password</th><th>Actions</th></tr>
@@ -341,15 +247,17 @@
                 <h3><i class="fas fa-users"></i> Manage Staff (Counselors & Faculty)</h3>
                 <h4>Add New Staff Member</h4>
                 <form id="add-staff-form">
-                    <div class="form-group form-group-row">
-                        <input type="text" class="form-control" name="name" placeholder="Full Name" required>
-                        <input type="text" class="form-control" name="username" placeholder="Username (Unique)" required>
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    <div class="form-group"><input type="text" class="form-control" name="name" placeholder="Full Name" required></div>
+                    <div class="form-group"><input type="text" class="form-control" name="username" placeholder="Username (Unique)" required></div>
+                    <div class="form-group"><input type="password" class="form-control" name="password" placeholder="Password" required></div>
+                    <div class="form-group">
                         <select class="form-control" name="role" required>
                             <option value="">Select Role</option>
                             <option value="Counselor">Counselor</option>
                             <option value="Faculty">Faculty</option>
                         </select>
+                    </div>
+                    <div class="form-group">
                         <select class="form-control" name="branch" id="staff-branch-select" required>
                             <option value="">Select Branch</option>
                             </select>
@@ -358,7 +266,7 @@
                 </form>
 
                 <h4>Staff List (Counselors & Faculty)</h4>
-                <div id="staff-list-container" class="table-responsive">
+                <div id="staff-list-container">
                     <table class="data-table">
                         <thead>
                             <tr><th>ID</th><th>Name</th><th>Role</th><th>Branch</th><th>Username</th><th>Password</th><th>Actions</th></tr>
@@ -374,15 +282,13 @@
                 <h3><i class="fas fa-code-branch"></i> Manage Branches</h3>
                 <h4>Create New Branch</h4>
                 <form id="add-branch-form">
-                    <div class="form-group form-group-row">
-                        <input type="text" class="form-control" name="branchName" placeholder="Branch Name (Unique)" required>
-                        <input type="text" class="form-control" name="location" placeholder="Location/Address" required>
-                    </div>
+                    <div class="form-group"><input type="text" class="form-control" name="branchName" placeholder="Branch Name (Unique)" required></div>
+                    <div class="form-group"><input type="text" class="form-control" name="location" placeholder="Location/Address" required></div>
                     <button type="submit" class="btn btn-primary">Create Branch (Check Duplicates)</button>
                 </form>
 
                 <h4>Branch List</h4>
-                <div id="branch-list-container" class="table-responsive">
+                <div id="branch-list-container">
                     <table class="data-table">
                         <thead>
                             <tr><th>ID</th><th>Name</th><th>Location</th><th>Staff Count</th><th>Student Count</th><th>Actions</th></tr>
@@ -420,44 +326,19 @@
     </footer>
 
     <script>
-        // --- UPDATED LIVE LINK (Keep the existing URL) ---
-        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElVvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec'; 
+        // --- UPDATED LIVE LINK ---
+        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec'; 
 
         document.addEventListener('DOMContentLoaded', () => {
             // Initial load data
             fetchData('loadInitialData', {}).then(result => {
                 console.log('Initial Data Loaded:', result);
-                if (result.status === 'SUCCESS' && result.data) {
+                if (result.status === 'SUCCESS') {
                     populateBranchDropdowns(result.data.branches);
                     displayBranches(result.data.branches);
                     displayStudents(result.data.students);
                     displayStaff(result.data.staff);
                 }
-            });
-            
-            // Mobile Menu Toggle Listeners
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            const menuToggle = document.getElementById('menu-toggle');
-            
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-            });
-            
-            overlay.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            });
-            
-            // Close sidebar when a navigation item is clicked (for mobile UX)
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                         sidebar.classList.remove('active');
-                         overlay.classList.remove('active');
-                    }
-                });
             });
         });
 
@@ -470,16 +351,19 @@
             document.getElementById('loader-overlay').style.display = 'none';
         }
 
-        // Generic Apps Script Fetch Function (Same Logic)
+        // Generic Apps Script Fetch Function
         async function fetchData(action, payload) {
             showLoader();
             try {
+                // Prepare form data for standard Apps Script doPost handling
                 const formData = new URLSearchParams();
                 formData.append('action', action);
                 formData.append('payload', JSON.stringify(payload));
                 
                 const response = await fetch(GAS_WEB_APP_URL, {
                     method: 'POST',
+                    // Note: Apps Script expects 'application/x-www-form-urlencoded' 
+                    // or 'text/plain' for postData to be accessible via e.postData.contents
                     body: formData 
                 });
 
@@ -488,6 +372,7 @@
                 }
 
                 const text = await response.text();
+                // Apps Script often returns JSON strings directly
                 const result = JSON.parse(text); 
 
                 if (result.status === 'ERROR') {
@@ -515,31 +400,29 @@
                     select.innerHTML = '<option value="">Filter by Branch</option>';
                 }
 
-                // Check if branches is an array before trying to map
-                if (Array.isArray(branches)) {
-                    branches.forEach(branch => {
-                        const option = document.createElement('option');
-                        option.value = branch.BranchName;
-                        option.textContent = branch.BranchName;
-                        select.appendChild(option);
-                    });
-                }
+                branches.forEach(branch => {
+                    const option = document.createElement('option');
+                    option.value = branch.BranchName;
+                    option.textContent = branch.BranchName;
+                    select.appendChild(option);
+                });
             });
         }
         
         function displayBranches(branches) {
             const tbody = document.getElementById('branches-data-body');
-            if (!Array.isArray(branches) || branches.length === 0) {
+            if (branches.length === 0) {
                  tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No branches created yet.</td></tr>';
                  return;
             }
+            // Simple display logic (replace with more detailed rendering)
             tbody.innerHTML = branches.map(b => `
                 <tr>
                     <td>${b.BranchID}</td>
-                    <td>${b['Branch Name']}</td>
+                    <td>${b.BranchName}</td>
                     <td>${b.Location}</td>
-                    <td>${b['Staff Assigned'] ? b['Staff Assigned'].split(',').filter(id => id.trim()).length : 0}</td>
-                    <td>${b['Students Assigned'] ? b['Students Assigned'].split(',').filter(id => id.trim()).length : 0}</td>
+                    <td>${b['Staff Assigned'] ? b['Staff Assigned'].split(',').length : 0}</td>
+                    <td>${b['Students Assigned'] ? b['Students Assigned'].split(',').length : 0}</td>
                     <td><button class="btn btn-primary" style="padding: 5px 10px;">Edit</button></td>
                 </tr>
             `).join('');
@@ -547,7 +430,7 @@
         
         function displayStudents(students) {
             const tbody = document.getElementById('students-data-body');
-            if (!Array.isArray(students) || students.length === 0) {
+            if (students.length === 0) {
                  tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No students loaded.</td></tr>';
                  return;
             }
@@ -557,7 +440,7 @@
                     <td>${s.Name}</td>
                     <td>${s.Branch}</td>
                     <td>${s.Username}</td>
-                    <td><span title="Click to view/reset">${s.Password ? s.Password.substring(0, 3) + '...' : 'N/A'}</span></td>
+                    <td><span title="Click to view/reset">${s.Password.substring(0, 3)}...</span></td>
                     <td><button class="btn btn-primary" style="padding: 5px 10px;">Reset Pwd</button></td>
                 </tr>
             `).join('');
@@ -565,7 +448,7 @@
         
         function displayStaff(staff) {
             const tbody = document.getElementById('staff-data-body');
-            if (!Array.isArray(staff) || staff.length === 0) {
+            if (staff.length === 0) {
                  tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No staff loaded.</td></tr>';
                  return;
             }
@@ -576,13 +459,13 @@
                     <td>${s.Role}</td>
                     <td>${s.Branch}</td>
                     <td>${s.Username}</td>
-                    <td><span title="Click to view">${s.Password ? s.Password.substring(0, 3) + '...' : 'N/A'}</span></td>
+                    <td><span title="Click to view">${s.Password.substring(0, 3)}...</span></td>
                     <td><button class="btn btn-primary" style="padding: 5px 10px;">View Info</button></td>
                 </tr>
             `).join('');
         }
 
-        // Sidebar Tab Switching (Updated for Mobile)
+        // Sidebar Tab Switching (Same as before)
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', function() {
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -595,7 +478,7 @@
             });
         });
 
-        // Add New Student (Same Logic)
+        // Add New Student
         document.getElementById('add-student-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const formData = new FormData(this);
@@ -606,12 +489,11 @@
             if (result.status === 'SUCCESS') {
                 alert(`Student added successfully! ID: ${result.studentId}`);
                 this.reset();
-                // Reload data after successful submission
                 fetchData('loadInitialData', {}).then(res => displayStudents(res.data.students));
             }
         });
         
-        // Add New Staff (Same Logic)
+        // Add New Staff
         document.getElementById('add-staff-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const formData = new FormData(this);
@@ -622,12 +504,11 @@
             if (result.status === 'SUCCESS') {
                 alert(`Staff member added successfully! ID: ${result.staffId}`);
                 this.reset();
-                 // Reload data after successful submission
                  fetchData('loadInitialData', {}).then(res => displayStaff(res.data.staff));
             }
         });
 
-         // Add New Branch (Same Logic)
+         // Add New Branch
         document.getElementById('add-branch-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const formData = new FormData(this);
@@ -651,6 +532,7 @@
         // Logout
         function logout() {
             if (confirm("Are you sure you want to log out?")) {
+                // This assumes index.html is the login page in the /frontend folder
                 window.location.href = 'index.html'; 
             }
         }
