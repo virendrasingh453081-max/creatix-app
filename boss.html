@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boss Dashboard | CREATIX</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styling and Variables (Same as before) */
+        :root {
+            --primary-blue: #007bff;
+            --primary-dark: #212529;
+            --secondary-dark: #343a40;
+            --light-bg: #f8f9fa;
+            --text-color: #f8f9fa;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--primary-dark);
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Loader Overlay */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loader {
+            border: 8px solid var(--secondary-dark);
+            border-top: 8px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Sidebar Navigation */
+        #sidebar {
+            width: 250px;
+            background-color: var(--primary-dark);
+            color: var(--text-color);
+            padding-top: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        #sidebar h2 {
+            text-align: center;
+            color: var(--primary-blue);
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--primary-blue);
+            color: var(--text-color);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        /* Main Content Area */
+        #main-content {
+            flex-grow: 1;
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h3 {
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--secondary-dark);
+        }
+
+        .form-control {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--text-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background-color: var(--primary-blue);
+            color: var(--text-color);
+            text-transform: uppercase;
+        }
+
+        .data-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Footer */
+        #footer {
+            background-color: var(--secondary-dark);
+            color: var(--text-color);
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <div style="display: flex; flex-grow: 1;">
+        <div id="sidebar">
+            <h2>CREATIX BOSS</h2>
+            <div class="nav-item active" data-tab="manage-students"><i class="fas fa-user-graduate"></i> Manage Students</div>
+            <div class="nav-item" data-tab="manage-staff"><i class="fas fa-users"></i> Manage Staff</div>
+            <div class="nav-item" data-tab="manage-branches"><i class="fas fa-code-branch"></i> Manage Branches</div>
+            <div class="nav-item" data-tab="leads-overview"><i class="fas fa-chart-line"></i> Leads Overview</div>
+            <div class="nav-item" data-tab="attendance-overview"><i class="fas fa-clipboard-check"></i> Attendance Overview</div>
+            <div class="nav-item" data-tab="settings"><i class="fas fa-cogs"></i> Settings</div>
+            <div class="nav-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        </div>
+
+        <div id="main-content">
+            <div id="manage-students" class="tab-content active">
+                <h3><i class="fas fa-user-graduate"></i> Manage Students</h3>
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <input type="text" class="form-control" id="student-search" placeholder="Search by Name or ID">
+                    <select class="form-control" id="student-branch-filter">
+                        <option value="">Filter by Branch</option>
+                        </select>
+                    <button class="btn btn-primary" onclick="searchStudents()">Search</button>
+                </div>
+                <h4>Add New Student</h4>
+                <form id="add-student-form">
+                    <div class="form-group"><input type="text" class="form-control" name="name" placeholder="Full Name" required></div>
+                    <div class="form-group"><input type="text" class="form-control" name="username" placeholder="Username (Unique)" required></div>
+                    <div class="form-group"><input type="password" class="form-control" name="password" placeholder="Password" required></div>
+                    <div class="form-group">
+                        <select class="form-control" name="branch" id="student-branch-select" required>
+                            <option value="">Select Branch</option>
+                            </select>
+                    </div>
+                    <div class="form-group"><input type="text" class="form-control" name="course" placeholder="Course Name" required></div>
+                    <div class="form-group"><input type="text" class="form-control" name="counselorAssigned" placeholder="Counselor ID/Name (Optional)"></div>
+                    <div class="form-group"><input type="text" class="form-control" name="facultyAssigned" placeholder="Faculty ID/Name (Optional)"></div>
+                    <button type="submit" class="btn btn-primary">Add Student (Check Duplicates)</button>
+                </form>
+
+                <h4>Student List</h4>
+                <div id="student-list-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>ID</th><th>Name</th><th>Branch</th><th>Username</th><th>Password</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="students-data-body">
+                            <tr><td colspan="6" style="text-align: center;">Loading students...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="manage-staff" class="tab-content">
+                <h3><i class="fas fa-users"></i> Manage Staff (Counselors & Faculty)</h3>
+                <h4>Add New Staff Member</h4>
+                <form id="add-staff-form">
+                    <div class="form-group"><input type="text" class="form-control" name="name" placeholder="Full Name" required></div>
+                    <div class="form-group"><input type="text" class="form-control" name="username" placeholder="Username (Unique)" required></div>
+                    <div class="form-group"><input type="password" class="form-control" name="password" placeholder="Password" required></div>
+                    <div class="form-group">
+                        <select class="form-control" name="role" required>
+                            <option value="">Select Role</option>
+                            <option value="Counselor">Counselor</option>
+                            <option value="Faculty">Faculty</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" name="branch" id="staff-branch-select" required>
+                            <option value="">Select Branch</option>
+                            </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Staff (Check Duplicates)</button>
+                </form>
+
+                <h4>Staff List (Counselors & Faculty)</h4>
+                <div id="staff-list-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>ID</th><th>Name</th><th>Role</th><th>Branch</th><th>Username</th><th>Password</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="staff-data-body">
+                            <tr><td colspan="7" style="text-align: center;">Loading staff...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="manage-branches" class="tab-content">
+                <h3><i class="fas fa-code-branch"></i> Manage Branches</h3>
+                <h4>Create New Branch</h4>
+                <form id="add-branch-form">
+                    <div class="form-group"><input type="text" class="form-control" name="branchName" placeholder="Branch Name (Unique)" required></div>
+                    <div class="form-group"><input type="text" class="form-control" name="location" placeholder="Location/Address" required></div>
+                    <button type="submit" class="btn btn-primary">Create Branch (Check Duplicates)</button>
+                </form>
+
+                <h4>Branch List</h4>
+                <div id="branch-list-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>ID</th><th>Name</th><th>Location</th><th>Staff Count</th><th>Student Count</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="branches-data-body">
+                            <tr><td colspan="6" style="text-align: center;">Loading branches...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="leads-overview" class="tab-content">
+                <h3><i class="fas fa-chart-line"></i> Leads Overview</h3>
+                <p>Implement the view for all leads, assignment, and conversion tracking.</p>
+            </div>
+            <div id="attendance-overview" class="tab-content">
+                <h3><i class="fas fa-clipboard-check"></i> Attendance Overview</h3>
+                <p>Implement student + staff attendance viewing with branch-wise filters.</p>
+            </div>
+            <div id="settings" class="tab-content">
+                <h3><i class="fas fa-cogs"></i> Settings</h3>
+                <h4>Change Boss Password</h4>
+                <form id="change-password-form">
+                    <div class="form-group"><input type="password" class="form-control" name="old-password" placeholder="Old Password" required></div>
+                    <div class="form-group"><input type="password" class="form-control" name="new-password" placeholder="New Password" required></div>
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <footer id="footer">
+        Made with <i class="fas fa-heart" style="color: red;"></i> by Tanush
+    </footer>
+
+    <script>
+        // --- UPDATED LIVE LINK ---
+        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec'; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial load data
+            fetchData('loadInitialData', {}).then(result => {
+                console.log('Initial Data Loaded:', result);
+                if (result.status === 'SUCCESS') {
+                    populateBranchDropdowns(result.data.branches);
+                    displayBranches(result.data.branches);
+                    displayStudents(result.data.students);
+                    displayStaff(result.data.staff);
+                }
+            });
+        });
+
+        // 8. LOADER / BUFFER ICON Logic
+        function showLoader() {
+            document.getElementById('loader-overlay').style.display = 'flex';
+        }
+
+        function hideLoader() {
+            document.getElementById('loader-overlay').style.display = 'none';
+        }
+
+        // Generic Apps Script Fetch Function
+        async function fetchData(action, payload) {
+            showLoader();
+            try {
+                // Prepare form data for standard Apps Script doPost handling
+                const formData = new URLSearchParams();
+                formData.append('action', action);
+                formData.append('payload', JSON.stringify(payload));
+                
+                const response = await fetch(GAS_WEB_APP_URL, {
+                    method: 'POST',
+                    // Note: Apps Script expects 'application/x-www-form-urlencoded' 
+                    // or 'text/plain' for postData to be accessible via e.postData.contents
+                    body: formData 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const text = await response.text();
+                // Apps Script often returns JSON strings directly
+                const result = JSON.parse(text); 
+
+                if (result.status === 'ERROR') {
+                    alert('Backend Error: ' + result.message);
+                    console.error('Backend Details:', result.data);
+                }
+                return result;
+
+            } catch (error) {
+                alert('Request Failed: ' + error.message + ". Check console for details.");
+                console.error('Fetch Error:', error);
+                return { status: 'ERROR', message: error.message };
+            } finally {
+                hideLoader();
+            }
+        }
+        
+        function populateBranchDropdowns(branches) {
+            const dropdowns = document.querySelectorAll('#student-branch-select, #staff-branch-select, #student-branch-filter');
+            dropdowns.forEach(select => {
+                // Clear existing options, keeping the default "Select Branch"
+                if (select.id !== 'student-branch-filter') {
+                    select.innerHTML = '<option value="">Select Branch</option>';
+                } else {
+                    select.innerHTML = '<option value="">Filter by Branch</option>';
+                }
+
+                branches.forEach(branch => {
+                    const option = document.createElement('option');
+                    option.value = branch.BranchName;
+                    option.textContent = branch.BranchName;
+                    select.appendChild(option);
+                });
+            });
+        }
+        
+        function displayBranches(branches) {
+            const tbody = document.getElementById('branches-data-body');
+            if (branches.length === 0) {
+                 tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No branches created yet.</td></tr>';
+                 return;
+            }
+            // Simple display logic (replace with more detailed rendering)
+            tbody.innerHTML = branches.map(b => `
+                <tr>
+                    <td>${b.BranchID}</td>
+                    <td>${b.BranchName}</td>
+                    <td>${b.Location}</td>
+                    <td>${b['Staff Assigned'] ? b['Staff Assigned'].split(',').length : 0}</td>
+                    <td>${b['Students Assigned'] ? b['Students Assigned'].split(',').length : 0}</td>
+                    <td><button class="btn btn-primary" style="padding: 5px 10px;">Edit</button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function displayStudents(students) {
+            const tbody = document.getElementById('students-data-body');
+            if (students.length === 0) {
+                 tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No students loaded.</td></tr>';
+                 return;
+            }
+             tbody.innerHTML = students.map(s => `
+                <tr>
+                    <td>${s['Student ID']}</td>
+                    <td>${s.Name}</td>
+                    <td>${s.Branch}</td>
+                    <td>${s.Username}</td>
+                    <td><span title="Click to view/reset">${s.Password.substring(0, 3)}...</span></td>
+                    <td><button class="btn btn-primary" style="padding: 5px 10px;">Reset Pwd</button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function displayStaff(staff) {
+            const tbody = document.getElementById('staff-data-body');
+            if (staff.length === 0) {
+                 tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No staff loaded.</td></tr>';
+                 return;
+            }
+            tbody.innerHTML = staff.map(s => `
+                <tr>
+                    <td>${s['Staff ID']}</td>
+                    <td>${s.Name}</td>
+                    <td>${s.Role}</td>
+                    <td>${s.Branch}</td>
+                    <td>${s.Username}</td>
+                    <td><span title="Click to view">${s.Password.substring(0, 3)}...</span></td>
+                    <td><button class="btn btn-primary" style="padding: 5px 10px;">View Info</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // Sidebar Tab Switching (Same as before)
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                if (tabId) {
+                    document.getElementById(tabId).classList.add('active');
+                }
+            });
+        });
+
+        // Add New Student
+        document.getElementById('add-student-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const studentData = Object.fromEntries(formData.entries());
+
+            const result = await fetchData('addStudent', studentData);
+
+            if (result.status === 'SUCCESS') {
+                alert(`Student added successfully! ID: ${result.studentId}`);
+                this.reset();
+                fetchData('loadInitialData', {}).then(res => displayStudents(res.data.students));
+            }
+        });
+        
+        // Add New Staff
+        document.getElementById('add-staff-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const staffData = Object.fromEntries(formData.entries());
+
+            const result = await fetchData('addStaff', staffData);
+
+            if (result.status === 'SUCCESS') {
+                alert(`Staff member added successfully! ID: ${result.staffId}`);
+                this.reset();
+                 fetchData('loadInitialData', {}).then(res => displayStaff(res.data.staff));
+            }
+        });
+
+         // Add New Branch
+        document.getElementById('add-branch-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const branchData = Object.fromEntries(formData.entries());
+
+            const result = await fetchData('addBranch', branchData);
+
+            if (result.status === 'SUCCESS') {
+                alert(`Branch created successfully! ID: ${result.branchId}`);
+                this.reset();
+                // Reload branches and dropdowns
+                fetchData('loadInitialData', {}).then(res => {
+                    if (res.status === 'SUCCESS') {
+                        populateBranchDropdowns(res.data.branches);
+                        displayBranches(res.data.branches);
+                    }
+                });
+            }
+        });
+
+        // Logout
+        function logout() {
+            if (confirm("Are you sure you want to log out?")) {
+                // This assumes index.html is the login page in the /frontend folder
+                window.location.href = 'index.html'; 
+            }
+        }
+    </script>
+</body>
+</html>
