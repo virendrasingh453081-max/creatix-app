@@ -24,11 +24,11 @@
       box-shadow: 0 0 20px rgba(0,0,0,0.6);
     }
     .login-card h2 { color: #1E90FF; margin-bottom: 30px; }
-    input { width: 100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #333; background:#121212; color:#fff; }
+    input { width: 100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #333; background:#121212; color:#fff; box-sizing: border-box; }
     input:focus { border-color:#1E90FF; box-shadow:0 0 8px #1E90FF; outline:none; }
-    button { width:100%; padding:12px; border:none; border-radius:8px; background:#1E90FF; color:#fff; font-size:16px; cursor:pointer; margin-top:10px; }
+    button { width:100%; padding:12px; border:none; border-radius:8px; background:#1E90FF; color:#fff; font-size:16px; cursor:pointer; margin-top:10px; transition: 0.3s; }
     button:hover { background:#007BFF; box-shadow:0 0 10px #1E90FF; }
-    .error-msg { color:#FF4C4C; margin-top:10px; display:none; }
+    .error-msg { color:#FF4C4C; margin-top:10px; display:none; font-size: 14px; }
     .loader-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(11,11,11,0.7); display:none; justify-content:center; align-items:center; z-index:999; }
     .loader { border:6px solid #f3f3f3; border-top:6px solid #1E90FF; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite; }
     @keyframes spin { 0%{transform:rotate(0deg);}100%{transform:rotate(360deg);} }
@@ -53,19 +53,20 @@
   <footer>Made with <span>❤️</span> by Tanush</footer>
 
   <script>
-    const webAppURL = "https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec"; // replace with your deployed .gs Web App URL
+    // ⚠️ IMPORTANT: Paste your NEW web app URL here
+    const webAppURL = "https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec";
 
     function showLoader(show){
       document.getElementById('loader').style.display = show ? 'flex' : 'none';
     }
 
     async function login(){
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
+      const usernameIn = document.getElementById('username').value.trim();
+      const passwordIn = document.getElementById('password').value.trim();
       const errorMsg = document.getElementById('error-msg');
       errorMsg.style.display = 'none';
 
-      if(!username || !password){
+      if(!usernameIn || !passwordIn){
         errorMsg.textContent = "Enter username and password";
         errorMsg.style.display = 'block';
         return;
@@ -73,30 +74,42 @@
 
       showLoader(true);
 
+      // FIX FOR CORS: Use URLSearchParams to send as 'application/x-www-form-urlencoded'
+      // This prevents the browser from sending a preflight OPTIONS request which GAS fails at.
+      const formData = new URLSearchParams();
+      formData.append('username', usernameIn);
+      formData.append('password', passwordIn);
+
       try {
         const res = await fetch(webAppURL, {
           method: "POST",
-          body: JSON.stringify({ username, password }),
-          headers: { "Content-Type": "application/json" }
+          body: formData, 
+          // do NOT set 'Content-Type': 'application/json' here
         });
+
         const data = await res.json();
         showLoader(false);
 
-        if(data.success){
-          // redirect based on role
-          switch(data.role){
-            case "boss": window.location.href = "/pages/boss.html"; break;
-            case "counselor": window.location.href = "/pages/counselor.html"; break;
-            case "faculty": window.location.href = "/pages/faculty.html"; break;
-            case "student": window.location.href = "/pages/student.html"; break;
+        if(data.status === "success"){
+          console.log("Login successful, Role:", data.role);
+          
+          // Redirect logic
+          switch(data.role.toLowerCase()){
+            case "boss": window.location.href = "pages/boss.html"; break;
+            case "counselor": window.location.href = "pages/counselor.html"; break;
+            case "faculty": window.location.href = "pages/faculty.html"; break;
+            case "student": window.location.href = "pages/student.html"; break;
+            default: 
+              alert("Login successful, but unknown role: " + data.role);
           }
         } else {
-          errorMsg.textContent = data.message;
+          errorMsg.textContent = data.message || "Invalid credentials";
           errorMsg.style.display = 'block';
         }
       } catch(e){
+        console.error(e);
         showLoader(false);
-        errorMsg.textContent = "Error connecting to server";
+        errorMsg.textContent = "Connection failed. Check console.";
         errorMsg.style.display = 'block';
       }
     }
