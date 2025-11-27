@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creatix - Student Dashboard</title>
+    <link rel="icon" href="data:,">
     <style>
         :root {
             --primary-color: #007bff;
@@ -468,9 +469,9 @@
                 apiCall('getAttendance'),
                 apiCall('getAllStaff')
             ]);
-            
+
             if (!attendance || !staff) return;
-            
+
             // Create Faculty Map
             const facultyMap = {};
             staff.forEach(s => facultyMap[s['Staff ID']] = s['Name']);
