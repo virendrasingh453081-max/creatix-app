@@ -379,198 +379,406 @@
                     <input type="text" id="convLeadId" placeholder="Enter Lead ID">
                 </div>
                 <div class="form-group">
-                    <label>Student Name</label>
-                    <input type="text" id="convName" placeholder="Full Name">
-                </div>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="convUsername" placeholder="Login Username">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="text" id="convPassword" placeholder="Login Password">
-                </div>
-                <div class="form-group">
-                    <label>Branch</label>
-                    <select id="convBranch"></select>
-                </div>
-                <div class="form-group">
-                    <label>Course</label>
-                    <input type="text" id="convCourse" placeholder="e.g. DCA">
-                </div>
-            </div>
-            <button class="btn btn-primary" onclick="convertLead()">Convert to Student</button>
-        </div>
+                    }
 
-        <!-- Attendance -->
-        <div id="attendance" class="tab-content">
-            <h2>Mark Self Attendance</h2>
-            <p style="color: var(--text-secondary);">Please allow location access to mark attendance.</p>
-            <button class="btn btn-primary" onclick="markSelfAttendance()">Mark Present</button>
-        </div>
+                    .form-group input,
+                    .form-group select {
+                    width: 100%;
+                    padding: 12px;
+                    background-color: var(--input-bg);
+                    border: 1px solid var(--input-border);
+                    border-radius: 8px;
+                    color: var(--text-color);
+                    box-sizing: border-box;
+                    font-size: 1rem;
+                    }
 
-        <footer>
-            Made with ❤️ by Tanush
-        </footer>
-    </div>
+                    .form-group input:focus,
+                    .form-group select:focus {
+                    outline: none;
+                    border-color: var(--primary-color);
+                    }
 
-    <script>
-        // CONFIGURATION
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec';
+                    .btn {
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    transition: background 0.3s, transform 0.1s;
+                    font-weight: bold;
+                    }
 
-        // --- AUTH CHECK ---
-        const user = JSON.parse(localStorage.getItem('creatix_user'));
-        const role = localStorage.getItem('creatix_role');
+                    .btn-primary {
+                    background-color: var(--primary-color);
+                    color: #fff;
+                    }
 
-        if (!user || role !== 'counselor') {
-            window.location.href = '../index.html';
-        }
+                    .btn-primary:hover {
+                    background-color: #0056b3;
+                    }
 
-        // --- UI LOGIC ---
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                    .btn-primary:active {
+                    transform: scale(0.98);
+                    }
 
-            document.getElementById(tabId).classList.add('active');
-            // Find the nav item that called this function
-            // Simple approach:
-        }
+                    /* Tables */
+                    .table-container {
+                    overflow-x: auto;
+                    }
 
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function () {
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+                    table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                    min-width: 600px;
+                    }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
+                    th,
+                    td {
+                    padding: 15px;
+                    text-align: left;
+                    border-bottom: 1px solid #333;
+                    }
 
-        function toggleSidebarOnMobile() {
-            if (window.innerWidth <= 768) {
-                toggleSidebar();
-            }
-        }
+                    th {
+                    background-color: #252525;
+                    color: var(--primary-color);
+                    font-weight: 600;
+                    }
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = '../index.html';
-        }
+                    tr:hover {
+                    background-color: #252525;
+                    }
 
-        function showLoader() { document.getElementById('loader').style.display = 'flex'; }
-        function hideLoader() { document.getElementById('loader').style.display = 'none'; }
+                    /* Footer */
+                    footer {
+                    text-align: center;
+                    padding: 20px;
+                    background-color: var(--surface-color);
+                    color: var(--text-secondary);
+                    margin-top: auto;
+                    border-top: 1px solid #333;
+                    font-size: 0.9rem;
+                    }
 
-        // --- API CALLS ---
-        async function apiCall(action, payload = {}) {
-            showLoader();
-            try {
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action, payload })
-                });
-                const result = await response.json();
-                if (result.status === 'error') {
-                    alert('Error: ' + result.message);
-                    return null;
-                }
-                return result.data;
-            } catch (e) {
-                console.error(e);
-                alert('Network error');
-                return null;
-            } finally {
-                hideLoader();
-            }
-        }
+                    /* Mobile Responsive */
+                    @media (max-width: 768px) {
+                    .sidebar {
+                    transform: translateX(-100%);
+                    }
 
-        // --- LEADS ---
-        async function addLead() {
-            const payload = {
-                Name: document.getElementById('leadName').value,
-                Phone: document.getElementById('leadPhone').value,
-                Email: document.getElementById('leadEmail').value,
-                Source: document.getElementById('leadSource').value,
-                FollowUpDate: document.getElementById('leadFollowUp').value,
-                CounselorAssigned: user.Name // Assign to self
-            };
+                    .sidebar.active {
+                    transform: translateX(0);
+                    }
 
-            const res = await apiCall('addLead', payload);
-            if (res) {
-                alert('Lead added!');
-                document.getElementById('leadName').value = '';
-            }
-        }
+                    .main-content {
+                    margin-left: 0;
+                    padding: 20px;
+                    padding-top: 80px;
+                    }
 
-        async function loadLeads() {
-            const leads = await apiCall('getLeads');
-            if (!leads) return;
-            // Filter for this counselor
-            const myLeads = leads.filter(l => l['Counselor Assigned'] === user.Name);
+                    .hamburger {
+                    display: block;
+                    }
 
-            const tbody = document.querySelector('#leadsTable tbody');
-            tbody.innerHTML = myLeads.map(l => `<tr><td>${l['Lead ID']}</td><td>${l['Name']}</td><td>${l['Phone']}</td><td>${l['Status']}</td><td>${l['Follow-up Date']}</td></tr>`).join('');
-        }
+                    .form-grid {
+                    grid-template-columns: 1fr;
+                    }
+                    }
+                    </style>
+                    </head>
 
-        // --- CONVERT ---
-        async function convertLead() {
-            const leadId = document.getElementById('convLeadId').value;
-            if (!leadId) return alert('Lead ID required');
+                    <body>
 
-            const studentData = {
-                Name: document.getElementById('convName').value,
-                Username: document.getElementById('convUsername').value,
-                Password: document.getElementById('convPassword').value,
-                Branch: document.getElementById('convBranch').value,
-                Course: document.getElementById('convCourse').value,
-                CounselorAssigned: user.Name,
-                FacultyAssigned: ''
-            };
+                        <div id="loader">
+                            <div class="spinner"></div>
+                        </div>
 
-            const res = await apiCall('convertLead', { LeadID: leadId, StudentData: studentData });
-            if (res) {
-                alert('Lead converted to Student successfully!');
-            }
-        }
+                        <div class="hamburger" onclick="toggleSidebar()">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
 
-        async function loadBranchesDropdown() {
-            const branches = await apiCall('getBranches');
-            if (!branches) return;
-            const options = branches.map(b => `<option value="${b['Branch Name']}">${b['Branch Name']}</option>`).join('');
-            document.getElementById('convBranch').innerHTML = options;
-        }
+                        <div class="sidebar" id="sidebar">
+                            <h2>CREATIX CRM</h2>
+                            <div class="nav-item active" onclick="showTab('add-lead'); toggleSidebarOnMobile()">Add Lead
+                            </div>
+                            <div class="nav-item" onclick="showTab('leads'); toggleSidebarOnMobile()">My Leads</div>
+                            <div class="nav-item" onclick="showTab('convert'); toggleSidebarOnMobile()">Convert Lead
+                            </div>
+                            <div class="nav-item" onclick="showTab('attendance'); toggleSidebarOnMobile()">Mark
+                                Attendance</div>
+                            <div class="nav-item" onclick="logout()"
+                                style="margin-top: auto; background-color: #dc3545; color: white;">
+                                Logout</div>
+                        </div>
 
-        // --- ATTENDANCE ---
-        function markSelfAttendance() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (position) => {
-                    const payload = {
-                        StudentID: '', // N/A
-                        MarkerID: user['Staff ID'], // Self
-                        Status: 'Present',
-                        Branch: user.Branch,
-                        Location: `${position.coords.latitude},${position.coords.longitude}`
-                    };
-                    const res = await apiCall('markAttendance', payload);
-                    if (res) alert('Attendance marked!');
-                }, () => {
-                    alert('Location access denied. Cannot mark attendance.');
-                });
-            } else {
-                alert('Geolocation is not supported by this browser.');
-            }
-        }
+                        <div class="main-content">
 
-        // Initial Load
-        // Only load branches if on convert tab, but we can pre-load or load on tab switch.
-        // Let's load on tab switch for efficiency or just here.
-        // The showTab function calls loadBranchesDropdown in the boss page, let's add it here too if needed.
-        // Actually, let's just call it once on load if we want.
-        // But for now, let's stick to the previous logic or improve it.
-        // I'll add the call to showTab logic or just call it here.
-        loadBranchesDropdown();
+                            <!-- Add Lead -->
+                            <div id="add-lead" class="tab-content active">
+                                <h2>Add New Lead</h2>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" id="leadName" placeholder="Lead Full Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="text" id="leadPhone" placeholder="Phone Number">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" id="leadEmail" placeholder="Email Address">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Source</label>
+                                        <select id="leadSource">
+                                            <option value="Social Media">Social Media</option>
+                                            <option value="Referral">Referral</option>
+                                            <option value="Walk-in">Walk-in</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Follow-up Date</label>
+                                        <input type="date" id="leadFollowUp">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" onclick="addLead()">Add Lead</button>
+                            </div>
 
-    </script>
-</body>
+                            <!-- My Leads -->
+                            <div id="leads" class="tab-content">
+                                <h2>My Leads</h2>
+                                <button class="btn btn-primary" onclick="loadLeads()">Refresh Leads</button>
+                                <div class="table-container">
+                                    <table id="leadsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Phone</th>
+                                                <th>Status</th>
+                                                <th>Follow-up</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Convert Lead -->
+                            <div id="convert" class="tab-content">
+                                <h2>Convert Lead to Student</h2>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Lead ID</label>
+                                        <input type="text" id="convLeadId" placeholder="Enter Lead ID">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Student Name</label>
+                                        <input type="text" id="convName" placeholder="Full Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Username</label>
+                                        <input type="text" id="convUsername" placeholder="Login Username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input type="text" id="convPassword" placeholder="Login Password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Branch</label>
+                                        <select id="convBranch"></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Assign Faculty</label>
+                                        <select id="convFaculty">
+                                            <option value="">Select Faculty</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Course</label>
+                                        <input type="text" id="convCourse" placeholder="e.g. DCA">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" onclick="convertLead()">Convert to Student</button>
+                            </div>
+
+                            <!-- Attendance -->
+                            <div id="attendance" class="tab-content">
+                                <h2>Mark Self Attendance</h2>
+                                <p style="color: var(--text-secondary);">Please allow location access to mark
+                                    attendance.</p>
+                                <button class="btn btn-primary" onclick="markSelfAttendance()">Mark Present</button>
+                            </div>
+
+                            <footer>
+                                Made with ❤️ by Tanush
+                            </footer>
+                        </div>
+
+                        <script>
+                            // CONFIGURATION
+                            const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwYZ9Q-i14nV12dKwElWvjM-x_aymoysvCeUokwHRIjJzwT8rwOnEz5dxFc6LuISlSs/exec';
+
+                            // --- AUTH CHECK ---
+                            const user = JSON.parse(localStorage.getItem('creatix_user'));
+                            const role = localStorage.getItem('creatix_role');
+
+                            if (!user || role !== 'counselor') {
+                                window.location.href = '../index.html';
+                            }
+
+                            // --- UI LOGIC ---
+                            function showTab(tabId) {
+                                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+                                document.getElementById(tabId).classList.add('active');
+                            }
+
+                            document.querySelectorAll('.nav-item').forEach(item => {
+                                item.addEventListener('click', function () {
+                                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                                    this.classList.add('active');
+                                });
+                            });
+
+                            function toggleSidebar() {
+                                document.getElementById('sidebar').classList.toggle('active');
+                            }
+
+                            function toggleSidebarOnMobile() {
+                                if (window.innerWidth <= 768) {
+                                    toggleSidebar();
+                                }
+                            }
+
+                            function logout() {
+                                localStorage.clear();
+                                window.location.href = '../index.html';
+                            }
+
+                            function showLoader() { document.getElementById('loader').style.display = 'flex'; }
+                            function hideLoader() { document.getElementById('loader').style.display = 'none'; }
+
+                            // --- API CALLS ---
+                            async function apiCall(action, payload = {}) {
+                                showLoader();
+                                try {
+                                    const response = await fetch(WEB_APP_URL, {
+                                        method: 'POST',
+                                        body: JSON.stringify({ action, payload })
+                                    });
+                                    const result = await response.json();
+                                    if (result.status === 'error') {
+                                        alert('Error: ' + result.message);
+                                        return null;
+                                    }
+                                    return result.data;
+                                } catch (e) {
+                                    console.error(e);
+                                    alert('Network error');
+                                    return null;
+                                } finally {
+                                    hideLoader();
+                                }
+                            }
+
+                            // --- LEADS ---
+                            async function addLead() {
+                                const payload = {
+                                    Name: document.getElementById('leadName').value,
+                                    Phone: document.getElementById('leadPhone').value,
+                                    Email: document.getElementById('leadEmail').value,
+                                    Source: document.getElementById('leadSource').value,
+                                    FollowUpDate: document.getElementById('leadFollowUp').value,
+                                    CounselorAssigned: user.Name // Assign to self
+                                };
+
+                                const res = await apiCall('addLead', payload);
+                                if (res) {
+                                    alert('Lead added!');
+                                    document.getElementById('leadName').value = '';
+                                }
+                            }
+
+                            async function loadLeads() {
+                                const leads = await apiCall('getLeads');
+                                if (!leads) return;
+                                // Filter for this counselor
+                                const myLeads = leads.filter(l => l['Counselor Assigned'] === user.Name);
+
+                                const tbody = document.querySelector('#leadsTable tbody');
+                                tbody.innerHTML = myLeads.map(l => `<tr><td>${l['Lead ID']}</td><td>${l['Name']}</td><td>${l['Phone']}</td><td>${l['Status']}</td><td>${l['Follow-up Date']}</td></tr>`).join('');
+                            }
+
+                            // --- CONVERT ---
+                            async function convertLead() {
+                                const leadId = document.getElementById('convLeadId').value;
+                                if (!leadId) return alert('Lead ID required');
+
+                                const studentData = {
+                                    Name: document.getElementById('convName').value,
+                                    Username: document.getElementById('convUsername').value,
+                                    Password: document.getElementById('convPassword').value,
+                                    Branch: document.getElementById('convBranch').value,
+                                    Course: document.getElementById('convCourse').value,
+                                    CounselorAssigned: user.Name,
+                                    FacultyAssigned: document.getElementById('convFaculty').value
+                                };
+
+                                const res = await apiCall('convertLead', { LeadID: leadId, StudentData: studentData });
+                                if (res) {
+                                    alert('Lead converted to Student successfully!');
+                                }
+                            }
+
+                            async function loadBranchesDropdown() {
+                                const branches = await apiCall('getBranches');
+                                if (!branches) return;
+                                const options = branches.map(b => `<option value="${b['Branch Name']}">${b['Branch Name']}</option>`).join('');
+                                document.getElementById('convBranch').innerHTML = options;
+                            }
+
+                            async function loadFacultyDropdown() {
+                                const staff = await apiCall('getAllStaff');
+                                if (!staff) return;
+                                // Filter only Faculty
+                                const faculty = staff.filter(s => s.Role === 'faculty');
+                                const options = '<option value="">Select Faculty</option>' + faculty.map(f => `<option value="${f['Staff ID']}">${f['Name']} (${f['Branch']})</option>`).join('');
+                                document.getElementById('convFaculty').innerHTML = options;
+                            }
+
+                            // --- ATTENDANCE ---
+                            function markSelfAttendance() {
+                                if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(async (position) => {
+                                        const payload = {
+                                            StudentID: '', // N/A
+                                            MarkerID: user['Staff ID'], // Self
+                                            Status: 'Present',
+                                            Branch: user.Branch,
+                                            Location: `${position.coords.latitude},${position.coords.longitude}`
+                                        };
+                                        const res = await apiCall('markAttendance', payload);
+                                        if (res) alert('Attendance marked!');
+                                    }, () => {
+                                        alert('Location access denied. Cannot mark attendance.');
+                                    });
+                                } else {
+                                    alert('Geolocation is not supported by this browser.');
+                                }
+                            }
+
+                            // Initial Load
+                            loadBranchesDropdown();
+                            loadFacultyDropdown();
+
+                        </script>
+                    </body>
 
 </html>
