@@ -330,7 +330,6 @@
 
     <div class="main-content">
 
-        <!-- Attendance -->
         <div id="attendance" class="tab-content active">
             <h2>Attendance Calendar</h2>
             <button class="btn btn-primary" onclick="loadAttendance()">Refresh Attendance</button>
@@ -348,7 +347,6 @@
             </div>
         </div>
 
-        <!-- Fees -->
         <div id="fees" class="tab-content">
             <h2>Fee Details</h2>
             <div class="form-grid">
@@ -371,7 +369,6 @@
             </div>
         </div>
 
-        <!-- Course Content -->
         <div id="course" class="tab-content">
             <h2>Course Content</h2>
             <ul>
@@ -381,7 +378,6 @@
             </ul>
         </div>
 
-        <!-- Contact Counselor -->
         <div id="contact" class="tab-content">
             <h2>Contact Counselor</h2>
             <p style="color: var(--text-secondary);">Your Counselor: <span id="counselorName"
@@ -468,13 +464,23 @@
 
         // --- ATTENDANCE ---
         async function loadAttendance() {
-            const attendance = await apiCall('getAttendance');
-            if (!attendance) return;
+            const [attendance, staff] = await Promise.all([
+                apiCall('getAttendance'),
+                apiCall('getAllStaff')
+            ]);
+            
+            if (!attendance || !staff) return;
+            
+            // Create Faculty Map
+            const facultyMap = {};
+            staff.forEach(s => facultyMap[s['Staff ID']] = s['Name']);
+
             // Filter for this student
             const myAttendance = attendance.filter(a => a['Student ID'] === user['Student ID']);
 
             const tbody = document.querySelector('#attendanceTable tbody');
-            tbody.innerHTML = myAttendance.map(a => `<tr><td>${new Date(a.Date).toLocaleDateString()}</td><td>${a.Status}</td><td>${a['Faculty ID']}</td></tr>`).join('');
+            // FIX: Removed extra spaces from <tr> tag. Was `< tr >` and `</ tr >`
+            tbody.innerHTML = myAttendance.map(a => `<tr><td>${new Date(a.Date).toLocaleDateString()}</td><td>${a.Status}</td><td>${facultyMap[a['Marked By']] || a['Marked By']}</td></tr>`).join('');
         }
 
         // --- FEES ---
@@ -502,6 +508,9 @@
         // Initial Load
         loadFees();
         loadCounselor();
+
+        // Optional: Load initial attendance data
+        // loadAttendance(); 
 
     </script>
 </body>
