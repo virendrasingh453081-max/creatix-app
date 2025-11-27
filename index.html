@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creatix - Login</title>
+    <link rel="icon" href="data:,">
     <style>
         :root {
             --primary-color: #007bff;
@@ -211,13 +212,13 @@
 
                     // Redirect based on role
                     if (role === 'boss') {
-                        window.location.href = 'boss.html';
+                        window.location.href = 'pages/boss.html';
                     } else if (role === 'counselor') {
-                        window.location.href = 'counselor.html';
+                        window.location.href = 'pages/counselor.html';
                     } else if (role === 'faculty') {
-                        window.location.href = 'faculty.html';
+                        window.location.href = 'pages/faculty.html';
                     } else if (role === 'student') {
-                        window.location.href = 'student.html';
+                        window.location.href = 'pages/student.html';
                     } else {
                         alert('Unknown role: ' + role);
                     }
